@@ -8,7 +8,7 @@ server.port=8081
 #spring.jpa.show-sql=true
 
 #postgresql
-spring.datasource.url=jdbc:postgresql://localhost:5432/company
+spring.datasource.url=jdbc:postgresql://localhost:5432/jobapp
 spring.datasource.username=postgres
 spring.datasource.password=harshal
 spring.jpa.database=POSTGRESQL
