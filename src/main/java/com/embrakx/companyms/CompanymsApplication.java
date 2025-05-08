@@ -8,6 +8,7 @@ public class CompanymsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CompanymsApplication.class, args);
+		System.out.println("Company_service");
 	}
 
 }
