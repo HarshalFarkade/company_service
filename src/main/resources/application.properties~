@@ -23,4 +23,8 @@ eureka.client.fetch-registry=true
 
 #Instance Info override
 eureka.instance.hostname=localhost
-eureka.instance.
+eureka.instance.prefer-ip-address=true
+eureka.instance.instance-id=${spring.application.name}:${server.port}
+
+#Zipkin
+management.tracing.sampling.probablity=1.0

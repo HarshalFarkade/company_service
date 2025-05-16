@@ -26,6 +26,14 @@ services:
     networks:
       - jobapps
 
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - 9411:9411
+    networks:
+      - jobapps
+
 networks:
   jobapps:
 
