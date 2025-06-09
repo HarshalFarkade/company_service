@@ -1,4 +1,4 @@
-package com.embrakx.reviewms.review.dto;
+package com.embrakx.companyms.company.dto;
 
 public class ReviewMessage {
     private Long id;

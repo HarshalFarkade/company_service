@@ -12,6 +12,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - jobapps
+    restart: unless-stopped
 
   pgadmin:
     image: dpage/pgadmin4
@@ -21,10 +22,102 @@ services:
       PGADMIN_DEFAULT_PASSWORD: harshal
     ports:
       - "5050:80"
+    depends_on:
+      - postgres
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     networks:
       - jobapps
+    restart: unless-stopped
+
+  config-server:
+      image: harshal14/config-server
+      container_name: config-server
+      ports:
+        - 8080:8080
+      depends_on:
+        - service-reg
+      networks:
+        - microservice-network
+        - jobapps
+      environment:
+        - SPRING_PROFILES_ACTIVE=docker
+      restart: unless-stopped
+
+  service-reg:
+      image: harshal14/service-reg:latest
+      container_name: service-reg
+      ports:
+        - 8761:8761
+      depends_on:
+        - rabbitmq
+        - zipkin
+        - postgres
+        - pgadmin
+      networks:
+        - microservice-network
+        - jobapps
+      restart: unless-stopped
+
+  companyms:
+    image: harshal14/companyms:latest
+    container_name: companyms
+    ports:
+      - 8088:8088
+    depends_on:
+      - service-reg
+      - config-server
+    networks:
+      - microservice-network
+      - jobapps
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    restart: unless-stopped
+
+  jobms:
+    image: harshal14/jobms:latest
+    container_name: jobms
+    ports:
+      - 8082:8082
+    depends_on:
+      - service-reg
+      - config-server
+    networks:
+      - microservice-network
+      - jobapps
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://service-reg:8761/eureka
+    restart: unless-stopped
+
+  reviewms:
+    image: harshal14/reviewms:latest
+    container_name: reviewms
+    ports:
+      - 8083:8083
+    depends_on:
+      - service-reg
+      - config-server
+    networks:
+      - microservice-network
+      - jobapps
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    restart: unless-stopped
+
+  gateway-service:
+    image: harshal14/gateway-service:latest
+    container_name: gateway-service
+    ports:
+      - 8085:8085
+    depends_on:
+      - service-reg
+    networks:
+      - microservice-network
+      - jobapps
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    restart: unless-stopped
 
   zipkin:
     image: openzipkin/zipkin
@@ -32,10 +125,24 @@ services:
     ports:
       - 9411:9411
     networks:
+      - microservice-network
       - jobapps
+
+  rabbitmq:
+      image: rabbitmq:3-management
+      container_name: rabbitmq
+      ports:
+        - 5672:5672
+        - 15672:15672
+      networks:
+        - microservice-network
+        - jobapps
 
 networks:
   jobapps:
+    driver: bridge
+  microservice-network:
+    driver: bridge
 
 volumes:
   postgres_data:

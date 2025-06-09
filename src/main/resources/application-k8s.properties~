@@ -5,7 +5,7 @@ review-service.url=http://review
 server.port=8088
 
 #H2 Config
-#spring.datasource.url=jdbc:h2:mem:test
+spring.datasource.url=jdbc:h2:mem:test
 
 #eureka
 spring.application.name=company-service
