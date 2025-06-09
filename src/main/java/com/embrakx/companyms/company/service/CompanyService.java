@@ -1,5 +1,6 @@
 package com.embrakx.companyms.company.service;
 
+import com.embrakx.companyms.company.dto.ReviewMessage;
 import com.embrakx.companyms.company.entity.Company;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,6 @@ public interface CompanyService {
     boolean deleteCompany(Long id);
 
     Company getCompanyById(Long id);
+
+    void updateCompanyRating(ReviewMessage reviewMessage);
 }
